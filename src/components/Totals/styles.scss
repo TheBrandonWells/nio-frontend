@@ -1,0 +1,19 @@
+.totalsDash {
+  display: flex;
+  width: 80%;
+  margin: 20px auto 40px;
+
+  div {
+    flex: 1;
+    text-align: center;
+
+    h5, p {
+      margin: 0;
+    }
+
+    p {
+      font-size: 20px;
+      color: rgba(0, 0, 0, 0.5);
+    }
+  }
+}
