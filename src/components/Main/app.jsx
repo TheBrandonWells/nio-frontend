@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import * as nio from 'niojs';
-import uuid from 'uuid';
 import _ from 'lodash';
 
 import Totals from '../Totals/totals';
 import Charts from '../Charts/charts';
+import Table from '../Table/table';
 
 
 import logo from './logo.png';
@@ -41,7 +41,7 @@ class App extends Component {
 
   componentDidMount() {
     nio.source
-      .socketio('//eval.socket.nio.works', ['groceries'], 1)
+      .socketio('//eval.socket.nio.works', ['groceries'])
       .pipe(nio.func(order => {
         const { salesList, totalCount, totalSales, chartData } = this.state;
         order.cart.map((node) => {
@@ -53,6 +53,9 @@ class App extends Component {
             })
           }
         });
+
+        // Potential improvement: only pass state if count has increased by 5 (if there's not a way to limit websocket flow)
+        // count % 5 == 0
 
         this.setState({
             salesList: [ ...salesList, order ],
@@ -92,44 +95,7 @@ class App extends Component {
           </p>
         </section>
 
-        <div className="tableContainer">
-          <table className="mainTable">
-            <tbody>
-              <tr>
-                <th>
-                  Amount
-                </th>
-                <th>
-                  Cart
-                </th>
-                <th>
-                  Customer
-                </th>
-              </tr>
-              {
-                salesList.map(function(sale) {
-                  return (
-                    <tr key={uuid.v4()}>
-                      <td>{sale.amount}</td>
-                      <td>
-                        {
-                          sale.cart.map((item, index) => {
-                            const { name: itemName, quantity } = item;
-                            return <li key={index}>{quantity} {itemName}</li>;
-                          })
-                        }
-                      </td>
-                      <td>
-                        <p>{sale.shopper.name}</p>
-                        <p className="gender">{sale.shopper.gender}</p>
-                      </td>
-                    </tr>
-                  )
-                }).reverse()
-              }
-            </tbody>
-          </table>
-        </div>
+        <Table salesList = {salesList} />
 
         <footer>
           2017 @ Brandon Wells
